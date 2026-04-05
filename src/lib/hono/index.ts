@@ -45,6 +45,16 @@ app.get("/images/:key{.+}", async (c) => {
   return new Response(object.body, { headers });
 });
 
+// ── Note on presigned URLs ────────────────────────────────────────────────────────────
+
+app.put("/api/media/direct/:key{.+}", requireAdminHono, async (c) => {
+  const key = c.req.param("key");
+  const body = await c.req.arrayBuffer();
+  const ct = c.req.header("content-type") ?? "application/octet-stream";
+  await c.env.BUCKET.put(key, body, { httpMetadata: { contentType: ct } });
+  return c.json({ ok: true });
+});
+
 // ── Quote requests ─────────────────────────────────────────────────────────
 // TanStack Start server functions handle /api/quotes via their own routing.
 // Add standalone Hono routes here only for webhooks or non-SSR endpoints.
