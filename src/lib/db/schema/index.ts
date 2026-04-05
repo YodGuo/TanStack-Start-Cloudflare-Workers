@@ -41,9 +41,15 @@ export const products = sqliteTable("products", {
   categoryId: text("category_id").references(() => productCategories.id),
   name: text("name").notNull(),
   summary: text("summary"),
-  specs: text("specs", { mode: "json" }).$type<Record<string, string>>(),
+  description: text("description"),           // long-form rich text (HTML string for now)
+  specs: text("specs", { mode: "json" })
+    .$type<Array<{ label: string; value: string }>>(),
+  features: text("features", { mode: "json" })
+    .$type<string[]>(),
   datasheetUrl: text("datasheet_url"),
   imageUrl: text("image_url"),
+  images: text("images", { mode: "json" })
+    .$type<string[]>(),                        // additional image gallery
   published: integer("published", { mode: "boolean" }).default(false),
   order: integer("order").default(0),
   createdAt: integer("created_at", { mode: "timestamp" })
