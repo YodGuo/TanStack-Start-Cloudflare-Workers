@@ -1,7 +1,12 @@
-import { Editor } from "@/components/editor/editor";
-import { useCreateNews } from "@/features/news/hooks/use-news";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import type { JSONContent } from "@tiptap/react";
+import { Editor } from "@/components/editor/editor";
+import { useCreateNews } from "@/features/news/hooks/use-news";
+
+export const Route = createFileRoute("/admin/news/new")({
+  component: NewNewsPage,
+});
 
 function NewNewsPage() {
   const createNews = useCreateNews();
@@ -32,15 +37,12 @@ function NewNewsPage() {
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium">Content</label>
-          <Editor
-            placeholder="Write your article…"
-            onChange={setContent}
-          />
+          <Editor placeholder="Write your article…" onChange={setContent} />
         </div>
         <button
           type="submit"
           disabled={createNews.isPending}
-          className="rounded-md bg-foreground px-6 py-2.5 text-sm font-medium text-background disabled:opacity-50"
+          className="btn-primary"
         >
           {createNews.isPending ? "Saving…" : "Save article"}
         </button>
