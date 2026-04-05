@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import type { Env } from "@/lib/env";
@@ -8,7 +9,6 @@ export function createAuth(env: Env) {
   return betterAuth({
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
-
     database: drizzleAdapter(db(env.DB), {
       provider: "sqlite",
       schema: {
@@ -16,21 +16,17 @@ export function createAuth(env: Env) {
         session: schema.sessions,
       },
     }),
-
     socialProviders: {
       github: {
         clientId: env.GITHUB_CLIENT_ID,
         clientSecret: env.GITHUB_CLIENT_SECRET,
       },
     },
-
     emailAndPassword: {
       enabled: true,
-      requireEmailVerification: false, // set true once Resend is wired
+      requireEmailVerification: false,
     },
-
     user: {
-      // Promote to admin if email matches ADMIN_EMAIL at first sign-in
       additionalFields: {
         role: {
           type: "string",
@@ -39,7 +35,6 @@ export function createAuth(env: Env) {
         },
       },
     },
-
     hooks: {
       after: [
         {
@@ -47,7 +42,6 @@ export function createAuth(env: Env) {
             ctx.path === "/sign-up/email" ||
             ctx.path === "/sign-in/social",
           handler: async (ctx) => {
-            // Promote admin by email
             const userId = ctx.context.newSession?.userId;
             const userEmail = ctx.context.newSession?.user?.email;
             if (userId && userEmail === env.ADMIN_EMAIL) {
