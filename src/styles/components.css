@@ -1,0 +1,164 @@
+@layer components {
+
+  /* ── Buttons ─────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-lg px-4 py-2.5 text-sm font-medium
+           transition-all duration-150
+           focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-brand-500 focus-visible:ring-offset-2
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-600 text-white
+           hover:bg-brand-700 active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply btn border border-[var(--color-border)]
+           bg-[var(--color-surface)] text-[var(--color-text-primary)]
+           hover:bg-[var(--color-surface-subtle)] active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply btn text-[var(--color-text-secondary)]
+           hover:bg-[var(--color-surface-muted)]
+           hover:text-[var(--color-text-primary)];
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  /* ── Inputs ──────────────────────────────────── */
+  .input {
+    @apply w-full rounded-lg border border-[var(--color-border)]
+           bg-[var(--color-surface)] px-3 py-2.5
+           text-sm text-[var(--color-text-primary)]
+           placeholder:text-[var(--color-text-tertiary)]
+           transition-colors duration-150
+           focus:border-brand-500 focus:outline-none
+           focus:ring-2 focus:ring-brand-500/20
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* ── Cards ───────────────────────────────────── */
+  .card {
+    @apply rounded-xl border border-[var(--color-border)]
+           bg-[var(--color-surface-raised)] p-5;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-150
+           hover:border-[var(--color-border-strong)]
+           hover:shadow-md;
+  }
+
+  /* ── Badges ──────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5
+           text-xs font-medium;
+  }
+
+  .badge-blue {
+    @apply badge bg-brand-100 text-brand-700;
+  }
+
+  .badge-green {
+    @apply badge bg-green-100 text-green-800;
+  }
+
+  .badge-amber {
+    @apply badge bg-amber-100 text-amber-800;
+  }
+
+  .badge-gray {
+    @apply badge bg-[var(--color-surface-muted)]
+           text-[var(--color-text-secondary)];
+  }
+
+  /* ── Section containers ──────────────────────── */
+  .section {
+    @apply mx-auto max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-py {
+    @apply py-16 sm:py-20 lg:py-24;
+  }
+
+  /* ── Typography helpers ──────────────────────── */
+  .heading-display {
+    @apply text-4xl font-semibold tracking-tight
+           sm:text-5xl lg:text-6xl;
+  }
+
+  .heading-1 {
+    @apply text-3xl font-semibold tracking-tight sm:text-4xl;
+  }
+
+  .heading-2 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  .heading-3 {
+    @apply text-xl font-semibold;
+  }
+
+  .body-lg {
+    @apply text-lg leading-relaxed text-[var(--color-text-secondary)];
+  }
+
+  .body-sm {
+    @apply text-sm leading-relaxed text-[var(--color-text-secondary)];
+  }
+
+  .label {
+    @apply text-xs font-medium uppercase tracking-widest
+           text-[var(--color-text-tertiary)];
+  }
+
+  /* ── Dividers ────────────────────────────────── */
+  .divider {
+    @apply border-t border-[var(--color-border)];
+  }
+
+  /* ── Nav link ────────────────────────────────── */
+  .nav-link {
+    @apply text-sm text-[var(--color-text-secondary)]
+           transition-colors duration-150
+           hover:text-[var(--color-text-primary)];
+  }
+
+  .nav-link-active {
+    @apply text-sm font-medium text-[var(--color-text-primary)];
+  }
+
+  /* ── Prose overrides ─────────────────────────── */
+  .prose {
+    @apply text-[var(--color-text-primary)];
+  }
+
+  .prose h1, .prose h2, .prose h3 {
+    @apply tracking-tight text-[var(--color-text-primary)];
+  }
+
+  .prose a {
+    @apply text-brand-600 no-underline hover:underline;
+  }
+
+  .prose code {
+    @apply rounded bg-[var(--color-surface-muted)]
+           px-1.5 py-0.5 text-sm font-mono
+           text-[var(--color-text-primary)];
+  }
+
+  .prose pre {
+    @apply rounded-xl border border-[var(--color-border)]
+           bg-gray-900 text-gray-100;
+  }
+}
