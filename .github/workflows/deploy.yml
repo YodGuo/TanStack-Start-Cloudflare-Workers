@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.5"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        env:
+          VITE_APP_URL: https://${{ secrets.DOMAIN }}
+          VITE_SITE_NAME: "PowerGuard"
+        run: bun run build
+
+      - name: Deploy to Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Inject resource IDs into wrangler.jsonc
+          sed -i "s/YOUR-ACTUAL-D1-ID/${{ secrets.D1_DATABASE_ID }}/g" wrangler.jsonc
+          sed -i "s/YOUR-ACTUAL-KV-ID/${{ secrets.KV_NAMESPACE_ID }}/g" wrangler.jsonc
+          bun run deploy
+
+      - name: Set runtime environment variables
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          for secret in \
+            "BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}" \
+            "BETTER_AUTH_URL=https://${{ secrets.DOMAIN }}" \
+            "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" \
+            "GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" \
+            "GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" \
+            "CLOUDFLARE_ZONE_ID=${{ secrets.CLOUDFLARE_ZONE_ID }}" \
+            "CLOUDFLARE_PURGE_API_TOKEN=${{ secrets.CLOUDFLARE_PURGE_API_TOKEN }}" \
+            "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" \
+            "DOMAIN=${{ secrets.DOMAIN }}"
+          do
+            key="${secret%%=*}"
+            value="${secret#*=}"
+            echo "$value" | bunx wrangler secret put "$key" \
+              --name my-b2b-site 2>/dev/null || true
+          done
+
+      - name: Purge CDN cache
+        run: |
+          curl -s -X POST \
+            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_PURGE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
