@@ -19,7 +19,6 @@ export const Route = createFileRoute("/news/")({
 function NewsListPage() {
   const { tag } = Route.useSearch();
   const navigate = Route.useNavigate();
-
   const { data: tagList } = useSuspenseQuery(tagsQuery());
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(newsListQuery(tag));
@@ -30,7 +29,6 @@ function NewsListPage() {
     <div className="mx-auto max-w-4xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-medium">News</h1>
 
-      {/* Tag filter */}
       {tagList.length > 0 && (
         <div className="mb-8 flex flex-wrap gap-2">
           <button
@@ -55,7 +53,6 @@ function NewsListPage() {
         </div>
       )}
 
-      {/* Post grid */}
       {posts.length === 0 ? (
         <p className="text-muted-foreground">No news articles yet.</p>
       ) : (
@@ -74,10 +71,7 @@ function NewsListPage() {
               )}
               <div className="mt-auto flex flex-wrap gap-1 pt-3">
                 {post.tags.map((t) => (
-                  <span
-                    key={t.id}
-                    className="rounded-full bg-muted px-2 py-0.5 text-xs"
-                  >
+                  <span key={t.id} className="rounded-full bg-muted px-2 py-0.5 text-xs">
                     {t.name}
                   </span>
                 ))}
@@ -92,7 +86,6 @@ function NewsListPage() {
         </div>
       )}
 
-      {/* Load more */}
       {hasNextPage && (
         <div className="mt-10 flex justify-center">
           <button
