@@ -6,6 +6,11 @@ import { commentsQuery as commentsQ } from "@/features/news/queries/comments.que
 import { CommentThread } from "@/components/news/comment-thread";
 import { QuoteDrawer } from "@/components/quotes/quote-drawer";
 
+// 👇 新增：Tiptap 渲染依赖
+import { generateHTML } from "@tiptap/html";
+import { editorExtensions } from "@/components/editor/extensions";
+import type { JSONContent } from "@tiptap/react";
+
 export const Route = createFileRoute("/news/$slug")({
   loader: async ({ context, params }) => {
     const post = await context.queryClient.ensureQueryData(
@@ -32,7 +37,8 @@ function NewsDetailPage() {
       <div className="mb-8">
         <div className="mb-3 flex flex-wrap gap-2">
           {data.tags.map((t) => (
-            
+            // 👇 修复：缺少 <a> 标签开头
+            <a
               key={t.id}
               href={`/news?tag=${t.slug}`}
               className="rounded-full bg-muted px-2 py-0.5 text-xs hover:bg-muted/70"
@@ -57,10 +63,8 @@ function NewsDetailPage() {
       </div>
 
       {/* Article content */}
-      <div className="prose prose-neutral max-w-none">
-        {/* Wire up Tiptap renderer here — see note below */}
-        <ArticleContent content={data.content} />
-      </div>
+      {/* 👇 已自动使用新的 Tiptap 渲染器 */}
+      <ArticleContent content={data.content} />
 
       {/* Comments */}
       <Suspense fallback={<div className="mt-12 text-sm text-muted-foreground">Loading comments…</div>}>
@@ -72,16 +76,17 @@ function NewsDetailPage() {
   );
 }
 
-// Minimal content renderer — replace with full Tiptap renderer when editor is added
+// 👇 已完全替换：真正的 Tiptap 静态渲染器（SSR 无客户端 JS）
 function ArticleContent({ content }: { content: unknown }) {
   if (!content) return null;
-  // For now render JSON — swap this for Tiptap static renderer
-  if (typeof content === "string") {
-    return <div dangerouslySetInnerHTML={{ __html: content }} />;
-  }
+
+  // 将 Tiptap JSON 转为 HTML（服务器端渲染）
+  const html = generateHTML(content as JSONContent, editorExtensions());
+
   return (
-    <pre className="whitespace-pre-wrap text-sm">
-      {JSON.stringify(content, null, 2)}
-    </pre>
+    <div
+      className="prose prose-neutral max-w-none"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }
