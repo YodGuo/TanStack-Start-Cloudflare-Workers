@@ -13,10 +13,11 @@ export const Route = createFileRoute("/admin")({
 });
 
 const navItems = [
-  { to: "/admin",        label: "Overview"  },
-  { to: "/admin/quotes", label: "Quotes"    },
-  { to: "/admin/news",   label: "News"      },
-  { to: "/admin/products", label: "Products" },
+  { to: "/admin",               label: "Overview"    },
+  { to: "/admin/quotes",        label: "Quotes"      },
+  { to: "/admin/news",          label: "News"        },
+  { to: "/admin/news/comments", label: "Comments"    },
+  { to: "/admin/products",      label: "Products"    },
 ];
 
 function AdminLayout() {
