@@ -17,12 +17,23 @@ export function useCreateNews() {
   });
 }
 
+// ✅ 已更新：成功后返回上一页 + 完整缓存失效
 export function useUpdateNews() {
   const qc = useQueryClient();
+  const navigate = useNavigate(); // 👈 新增导航
 
   return useMutation({
     mutationFn: (data: UpdateNewsInput) => updateNewsFn({ data }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_KEYS.all }),
+    onSuccess: (_, variables) => {
+      // 失效列表缓存
+      qc.invalidateQueries({ queryKey: NEWS_KEYS.all });
+      // 失效当前文章详情缓存
+      qc.invalidateQueries({
+        queryKey: NEWS_KEYS.adminById(variables.id),
+      });
+      // 🚀 成功后返回上一页（回到管理员新闻列表）
+      navigate({ to: ".." });
+    },
   });
 }
 
