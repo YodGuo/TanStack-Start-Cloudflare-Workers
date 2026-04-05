@@ -44,7 +44,6 @@ export const getNewsListFn = createServerFn({ method: "GET" })
     const hasNextPage = posts.length > data.limit;
     const items = hasNextPage ? posts.slice(0, data.limit) : posts;
 
-    // Fetch tags for each post
     const postIds = items.map((p) => p.id);
     const postTagRows = postIds.length
       ? await context.db
@@ -117,6 +116,32 @@ export const getAdminNewsListFn = createServerFn({ method: "GET" })
       .all();
   });
 
+// 👇 【新增】管理员通过 ID 获取单篇文章（你要求添加的）
+export const getAdminNewsByIdFn = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .validator((data: unknown) => z.object({ id: z.string() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const post = await context.db
+      .select()
+      .from(newsPosts)
+      .where(eq(newsPosts.id, data.id))
+      .get();
+
+    if (!post) return null;
+
+    const postTagRows = await context.db
+      .select()
+      .from(newsPostTags)
+      .innerJoin(tags, eq(newsPostTags.tagId, tags.id))
+      .where(eq(newsPostTags.postId, post.id))
+      .all();
+
+    return {
+      ...post,
+      tags: postTagRows.map((r) => r.tags),
+    };
+  });
+
 // ── Admin: create post ────────────────────────────────────────────────────
 
 export const createNewsFn = createServerFn({ method: "POST" })
@@ -126,7 +151,6 @@ export const createNewsFn = createServerFn({ method: "POST" })
     const id = nanoid();
     const baseSlug = slugify(data.title);
 
-    // Ensure slug uniqueness
     let slug = baseSlug;
     let suffix = 1;
     while (true) {
@@ -152,7 +176,6 @@ export const createNewsFn = createServerFn({ method: "POST" })
       authorId: context.user.id,
     });
 
-    // Upsert and attach tags
     if (data.tags?.length) {
       await upsertTags(context.db, id, data.tags);
     }
@@ -180,7 +203,6 @@ export const updateNewsFn = createServerFn({ method: "POST" })
       .where(eq(newsPosts.id, id));
 
     if (tagNames !== undefined) {
-      // Clear existing tags then re-attach
       await context.db
         .delete(newsPostTags)
         .where(eq(newsPostTags.postId, id));
@@ -206,7 +228,7 @@ export const deleteNewsFn = createServerFn({ method: "POST" })
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
-async function upsertTags(db: DB, postId: string, tagNames: string[]) {
+async function upsertTags(db: any, postId: string, tagNames: string[]) {
   for (const name of tagNames) {
     const slug = slugify(name);
     let tag = await db
