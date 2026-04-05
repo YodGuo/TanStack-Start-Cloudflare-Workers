@@ -60,17 +60,17 @@ export const products = sqliteTable("products", {
 // ─── Quote Requests ───────────────────────────────────────────────────────────
 
 export const quoteRequests = sqliteTable("quote_requests", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  company: text("company").notNull(),
-  phone: text("phone"),
+  id:         text("id").primaryKey(),
+  email:      text("email").notNull(),
+  name:       text("name"),              // optional
+  company:    text("company"),           // optional
+  phone:      text("phone"),
   productIds: text("product_ids", { mode: "json" }).$type<string[]>(),
-  message: text("message"),
-  status: text("status", {
+  message:    text("message").notNull(),
+  status:     text("status", {
     enum: ["new", "contacted", "quoted", "closed"],
   }).default("new"),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt:  integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),
 });
