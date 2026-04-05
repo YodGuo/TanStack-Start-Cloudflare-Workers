@@ -1,3 +1,12 @@
+import { useSubmitQuote } from "@/features/quotes/hooks/use-quotes";
+
+// Inside the component:
+const { mutateAsync, isPending } = useSubmitQuote();
+
+const onSubmit = async (values: QuoteFormValues) => {
+  await mutateAsync(values);
+  setSubmitted(true);
+};
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
