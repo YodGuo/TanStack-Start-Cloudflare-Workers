@@ -121,3 +121,18 @@ export const comments = sqliteTable("comments", {
     .notNull()
     .default(sql`(unixepoch())`),
 });
+
+// ─── Media ─────────────────────────────────────────────────────────────────
+
+export const media = sqliteTable("media", {
+  id: text("id").primaryKey(),
+  key: text("key").notNull().unique(),   // R2 object key
+  url: text("url").notNull(),            // public CDN URL
+  filename: text("filename").notNull(),
+  mimeType: text("mime_type").notNull(),
+  size: integer("size").notNull(),       // bytes
+  uploadedBy: text("uploaded_by").references(() => users.id),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
