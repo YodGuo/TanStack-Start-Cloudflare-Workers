@@ -2,6 +2,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createProductSchema, type CreateProductInput } from "@/features/products/products.schema";
 import type { productCategories } from "@/lib/db/schema";
+// 👇 新增：导入富文本编辑器
+import { Editor } from "@/components/editor/editor";
 
 type Category = typeof productCategories.$inferSelect;
 
@@ -18,7 +20,7 @@ export function ProductForm({
   onSubmit,
   isPending,
 }: ProductFormProps) {
-  const { register, handleSubmit, control, formState: { errors } } =
+  const { register, handleSubmit, control, setValue, formState: { errors } } =
     useForm<CreateProductInput>({
       resolver: zodResolver(createProductSchema),
       defaultValues: {
@@ -85,13 +87,22 @@ export function ProductForm({
           />
         </div>
 
+        {/* 👇 已替换：富文本编辑器 Description */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium">Description</label>
-          <textarea
-            {...register("description")}
-            className="input min-h-[120px] resize-none"
+          <Editor
+            defaultValue={
+              defaultValues?.description
+                ? JSON.parse(defaultValues.description)
+                : undefined
+            }
             placeholder="Full product description shown on detail page"
+            onChange={(json) => setValue("description", JSON.stringify(json))}
+            className="min-h-[120px]"
           />
+          {errors.description && (
+            <p className="text-xs text-red-500">{errors.description.message}</p>
+          )}
         </div>
       </section>
 
