@@ -1,0 +1,70 @@
+@layer components {
+  .article-prose {
+    @apply text-base leading-relaxed text-[var(--color-text-primary)];
+  }
+
+  .article-prose h2 {
+    @apply mt-10 mb-4 text-2xl font-semibold tracking-tight;
+  }
+
+  .article-prose h3 {
+    @apply mt-8 mb-3 text-xl font-semibold;
+  }
+
+  .article-prose p {
+    @apply mb-5 leading-relaxed text-[var(--color-text-secondary)];
+  }
+
+  .article-prose ul {
+    @apply mb-5 flex flex-col gap-2 pl-5;
+  }
+
+  .article-prose ul li {
+    @apply relative text-[var(--color-text-secondary)];
+  }
+
+  .article-prose ul li::before {
+    content: '';
+    @apply absolute -left-4 top-2.5 h-1.5 w-1.5
+           rounded-full bg-brand-600;
+  }
+
+  .article-prose blockquote {
+    @apply my-6 border-l-4 border-brand-600
+           pl-5 italic text-[var(--color-text-secondary)];
+  }
+
+  .article-prose pre {
+    @apply my-6 overflow-x-auto rounded-xl
+           border border-[var(--color-border)]
+           bg-gray-900 px-5 py-4;
+  }
+
+  .article-prose pre code {
+    @apply bg-transparent p-0 text-sm text-gray-100;
+  }
+
+  .article-prose img {
+    @apply my-8 rounded-xl border border-[var(--color-border)];
+  }
+
+  .article-prose a {
+    @apply text-brand-600 underline
+           underline-offset-2 hover:text-brand-700;
+  }
+
+  .article-prose table {
+    @apply my-6 w-full text-sm;
+  }
+
+  .article-prose th {
+    @apply border-b border-[var(--color-border)]
+           py-2 text-left font-medium
+           text-[var(--color-text-primary)];
+  }
+
+  .article-prose td {
+    @apply border-b border-[var(--color-border-subtle)]
+           py-2.5 text-[var(--color-text-secondary)];
+  }
+}
