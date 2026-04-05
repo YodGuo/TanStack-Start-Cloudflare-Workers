@@ -1,12 +1,19 @@
 import { queryOptions, infiniteQueryOptions } from "@tanstack/react-query";
-import { getNewsListFn, getNewsBySlugFn, getTagsFn, getAdminNewsListFn } from "../api/news.api";
+import {
+  getNewsListFn,
+  getNewsBySlugFn,
+  getTagsFn,
+  getAdminNewsListFn,
+  getAdminNewsByIdFn,
+} from "../api/news.api";
 
 export const NEWS_KEYS = {
   all:       ["news"] as const,
-  list:      (tag?: string) => ["news", "list", tag ?? "all"] as const,
-  detail:    (slug: string) => ["news", "detail", slug] as const,
-  tags:      () => ["news", "tags"] as const,
-  adminList: () => ["news", "admin", "list"] as const,
+  list:      (tag?: string)  => ["news", "list", tag ?? "all"] as const,
+  detail:    (slug: string)  => ["news", "detail", slug] as const,
+  tags:      ()              => ["news", "tags"] as const,
+  adminList: ()              => ["news", "admin", "list"] as const,
+  adminById: (id: string)    => ["news", "admin", id] as const,
 };
 
 export function newsListQuery(tag?: string) {
@@ -38,5 +45,12 @@ export function adminNewsListQuery() {
   return queryOptions({
     queryKey: NEWS_KEYS.adminList(),
     queryFn: () => getAdminNewsListFn(),
+  });
+}
+
+export function adminNewsByIdQuery(id: string) {
+  return queryOptions({
+    queryKey: NEWS_KEYS.adminById(id),
+    queryFn: () => getAdminNewsByIdFn({ data: { id } }),
   });
 }
