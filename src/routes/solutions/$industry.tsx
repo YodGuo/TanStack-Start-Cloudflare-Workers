@@ -127,7 +127,7 @@ function SolutionPage() {
       )}
 
       {/* Requirements */}
-      {detail?.requirements.length && (
+      {detail && detail.requirements.length > 0 && (
         <section className="bg-muted/30 py-14">
           <div className="mx-auto max-w-4xl px-4">
             <h2 className="mb-6 text-xl font-medium">

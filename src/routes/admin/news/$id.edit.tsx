@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -106,14 +106,15 @@ function EditNewsPage() {
             /{data.slug}
           </p>
         </div>
-        
-          href={`/news/${data.slug}`}
+        <Link
+          to="/news/$slug"
+          params={{ slug: data.slug }}
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm text-muted-foreground hover:text-foreground"
         >
           View live →
-        </a>
+        </Link>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
