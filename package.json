@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "bun run --bun vinxi dev",
     "build": "bun run --bun vinxi build",
+    "postinstall": "node scripts/patch-router-generator.mjs",
     "deploy": "wrangler deploy",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply my-b2b-site-db --remote",
@@ -35,8 +36,5 @@
     "drizzle-kit": "^0.31.10",
     "vite-tsconfig-paths": "^6.1.1",
     "wrangler": "^4.80.0"
-  },
-  "overrides": {
-    "@tanstack/router-generator": "1.120.5"
   }
 }
