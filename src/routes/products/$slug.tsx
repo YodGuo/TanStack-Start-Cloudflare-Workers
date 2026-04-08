@@ -70,7 +70,7 @@ function ProductDetailPage() {
 
           {/* Datasheet download */}
           {data.datasheetUrl && (
-            
+            <a
               href={data.datasheetUrl}
               target="_blank"
               rel="noopener noreferrer"

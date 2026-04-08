@@ -35,8 +35,5 @@
     "drizzle-kit": "^0.31.10",
     "vite-tsconfig-paths": "^6.1.1",
     "wrangler": "^4.80.0"
-  },
-  "overrides": {
-    "@tanstack/router-generator": "1.120.5"
   }
 }

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useSuspenseInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { newsListQuery, tagsQuery } from "@/features/news/queries/news.queries";
@@ -58,9 +58,10 @@ function NewsListPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
-            
+            <Link
               key={post.id}
-              href={`/news/${post.slug}`}
+              to="/news/$slug"
+              params={{ slug: post.slug }}
               className="group flex flex-col gap-2 rounded-xl border bg-background p-5 transition-colors hover:bg-muted/40"
             >
               <p className="font-medium group-hover:underline">{post.title}</p>
@@ -81,7 +82,7 @@ function NewsListPage() {
                   ? new Date(post.publishedAt * 1000).toLocaleDateString()
                   : ""}
               </p>
-            </a>
+            </Link>
           ))}
         </div>
       )}
