@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "bun run --bun vinxi dev",
     "build": "bun run --bun vinxi build",
+    "postinstall": "node scripts/patch-router-generator.mjs",
     "deploy": "wrangler deploy",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply my-b2b-site-db --remote",
